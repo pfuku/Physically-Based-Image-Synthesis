@@ -50,18 +50,18 @@ namespace scene
 			bool intersect(const Ray& ray,Intersection* isect) const;
 			
 			//method, which checks for any intersection  along a ray, again returning a boolean 
-			//result. Because it doesn’t return information about the geometry at the intersection 
-			//point and because it doesn’t need to search for the closest intersection, it can be more efficient
+			//result. Because it doesnï¿½t return information about the geometry at the intersection 
+			//point and because it doesnï¿½t need to search for the closest intersection, it can be more efficient
 			bool intersectp(const Ray& ray) const;		
 			void antialias_on() { m_aa_on = true; };
 			void antialias_off() { m_aa_on = false; };
-			virtual void render() sealed;	
+			virtual void render();
 			virtual void render_parallel();
-			void render_parallel_task(int x, CImg<unsigned char>* image, CImgDisplay& disp);
+			void render_parallel_task(int x, CImg<unsigned char>* image);
 		private:	
 			void initialize();			
 			output::TRadiance l(const Ray&);		
-			output::TRadiance Scene::l(const Ray& r, Intersection* intersection);
+			output::TRadiance l(const Ray& r, Intersection* intersection);
 			output::TRadiance calculate_illumination(const Ray& r,Intersection* isect,int depth = 0,double n1 = 1.0);
 			output::TRadiance calculate_hardshadow(const Ray& r,Intersection* isect,Light* light);
 			output::TRadiance calculate_softshadow(const Ray& r,Intersection* isect,Light* light);	

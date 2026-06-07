@@ -79,8 +79,8 @@ namespace output
 			//randomly generate sample (aa)
 			const space::Point3 viewr() const {
 
-					double yy =  m_y + (random()*m_inc_y);
-					double xx =  m_x + (random()*m_inc_x);			
+double yy =  m_y + (rnd_double()*m_inc_y);
+					double xx =  m_x + (rnd_double()*m_inc_x);
 
 					return space::Point3(xx,yy,m_z);
 			}

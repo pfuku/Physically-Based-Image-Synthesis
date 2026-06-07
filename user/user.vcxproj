@@ -63,9 +63,9 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>renderer.lib;tinyxmlSTL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>renderer.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)user.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\renderer\Debug;..\DebugtinyxmlSTL;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\renderer\Debug;..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)user.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
@@ -86,7 +86,7 @@
     </ClCompile>
     <Link>
       <OutputFile>$(OutDir)user.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\renderer\Release;C:\Users\ufukt\source\repos\physically-based-rendering\ReleasetinyxmlSTL;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\renderer\Release;..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -94,7 +94,7 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalDependencies>renderer.lib;tinyxmlSTL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>renderer.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -5,61 +5,58 @@ namespace scene
 {
 	bool TriangleMesh::load()
 	{
-			std::fstream stream;
-			stream.open(m_filename.c_str(),std::ios::in);
-			std::string temp_string;
-			double x = 0,y = 0,z = 0;
-			char timeStr [9];
+		std::fstream stream;
+		stream.open(m_filename.c_str(),std::ios::in);
+		std::string temp_string;
+		double x = 0,y = 0,z = 0;
+		char timeStr [9];
 
-			if (stream.is_open())
+		if (stream.is_open())
+		{
+			time_t now = time(NULL);
+			strftime(timeStr, sizeof(timeStr), "%H:%M:%S", localtime(&now));
+			std::cout << "> " << timeStr << " : "<< "geometry is loading..." << std::endl;
+
+			stream >> temp_string;
+
+			while (!stream.eof() && temp_string != "")
 			{
-				
-				_strtime( timeStr );
-				std::cout << "> " << timeStr << " : "<< "geometry is loading..." << std::endl;
+				if ((temp_string.at(0) >= '0' && temp_string.at(0) <= '9') ||
+					(temp_string.at(0) == '-' || temp_string.at(0) == '+'))
+				{
+					x = atof(temp_string.c_str());
+					stream >> y >> z;
+					Vertex a(x,y,z);
+
+					stream >> x >> y >> z;
+					Vertex b(x,y,z);
+
+					stream >> x >> y >> z;
+					Vertex c(x,y,z);
+
+					Triangle* t = new Triangle(a,b,c);
+					m_facelist.push_back(t);
+				}
+				else if (temp_string.at(0) != ' ')
+				{
+					// ignore non-numeric tokens
+				}
 
 				stream >> temp_string;
-			
-				while (!stream.eof() && temp_string!="")
-				{
-					if ( (temp_string.at(0)>='0' && temp_string.at(0)<='9') ||
-						 (temp_string.at(0)=='-' || temp_string.at(0)=='+'))
-					{					
-						x = atof(temp_string.c_str());
-						stream >> y >> z;					
-						Vertex a(x,y,z);
-
-						stream >> x >> y >> z;
-						Vertex b(x,y,z);
-
-						stream >> x >> y >> z;
-						Vertex c(x,y,z);
-
-						Triangle* t = new Triangle(a,b,c);	
-						m_facelist.push_back(t);
-
-					} else if (temp_string.at(0)!=' ')
-					{
-						//
-					}
-
-					stream >> temp_string;
-				}				
-
-				stream.close();
-				
-				_strtime( timeStr );
-				std::cout << "> " << timeStr << " : "<< "geometry is loaded." << std::endl;
-				
-				return true;
-
-			} else 
-			{
-				std::cout << "Error: geometry file does not exist" << std::endl;
-
-				return false;
 			}
-	}
 
+			stream.close();
+			now = time(NULL);
+			strftime(timeStr, sizeof(timeStr), "%H:%M:%S", localtime(&now));
+			std::cout << "> " << timeStr << " : "<< "geometry is loaded." << std::endl;
+			return true;
+		}
+		else
+		{
+			std::cout << "Error: geometry file does not exist" << std::endl;
+			return false;
+		}
+	}
 	void TriangleMesh::calculatebounds()
 	{
 		max_x = 0;

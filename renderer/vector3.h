@@ -109,7 +109,7 @@ namespace space
 };
 
 inline space::Vector3 operator*(double lhs,const space::Vector3& rhs) { return rhs*lhs; };
-inline double random() { return ((double)rand()/RAND_MAX); };
+inline double rnd_double() { return ((double)rand()/RAND_MAX); };
 inline double degtorad(int angle) { return (angle* PI / 180.0); };
 inline void random_stratified(space::Vector3* list,int size) {
 	
@@ -121,8 +121,8 @@ inline void random_stratified(space::Vector3* list,int size) {
 
 	for(int i=0;i<size;i++) {
 		for(int j=0;j<size;j++) {
-			double xx =  ix + ((hinc)-(random()*(inc)));
-			double yy =  iy + ((hinc)-(random()*(inc)));
+			double xx =  ix + ((hinc)-(rnd_double()*(inc)));
+			double yy =  iy + ((hinc)-(rnd_double()*(inc)));
 
 			space::Vector3 t(xx,yy,0);
 			list[c] = t;

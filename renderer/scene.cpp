@@ -1,8 +1,6 @@
 #include "scene.h"
 #include <time.h>
-#include <ppl.h>
-
-using namespace concurrency;
+#include <algorithm>
 
 namespace scene
 {
@@ -35,13 +33,13 @@ namespace scene
 		m_aa_on = false;		
 	}
 
-	void Scene::render_parallel_task(int x, CImg<unsigned char>* image, CImgDisplay& disp)
+	void Scene::render_parallel_task(int x, CImg<unsigned char>* image)
 	{
 		Intersection* intersection = new Intersection();		
-		output::Screen* screen = new output::Screen(disp.width, disp.height);
+		output::Screen* screen = new output::Screen(image->width, image->height);
 		output::Sampler* sampler = new output::Sampler(1.0, 1.0, 0, screen);
 
-		for (int y = 0;y < screen->height();y++)
+		for (int y = 0; y < screen->height(); y++)
 		{
 			scene::Ray r;
 			sampler->next(x, y);
@@ -53,7 +51,6 @@ namespace scene
 			(*image)(screen->width() - 1 - x, screen->height() - 1 - y, 1) = 255 * screen->buffer(x, y).g;
 			(*image)(screen->width() - 1 - x, screen->height() - 1 - y, 2) = 255 * screen->buffer(x, y).b;
 		}
-		disp.display(*image);
 
 		delete intersection;
 		delete screen;
@@ -64,38 +61,35 @@ namespace scene
 	{		
 		const output::Screen* scr = m_sampler->screen();
 		char timeStr[9];
-		_strtime(timeStr);
+		time_t now = time(NULL);
+		strftime(timeStr, sizeof(timeStr), "%H:%M:%S", localtime(&now));
 		std::cout << "> " << timeStr << " : " << "rendering..." << std::endl;
 		CImg<unsigned char>* image = new CImg<unsigned char>(scr->width(), scr->height(), 1, 3, 255);
-		CImgDisplay disp(*image, "pbrt - ufuk tiryaki @ bogazici university");
 		const unsigned char black[] = { 0,0,0 };
 		const unsigned char white[] = { 255,255,255 };
 
-		parallel_for(0, (int)scr->width(), [&](int x) {
-			render_parallel_task(x, image, disp);
-			});
+		for (int x = 0; x < (int)scr->width(); ++x) {
+			render_parallel_task(x, image);
+		}
 
-		_strtime(timeStr);
+		now = time(NULL);
+		strftime(timeStr, sizeof(timeStr), "%H:%M:%S", localtime(&now));
 		std::cout << "> " << timeStr << " : " << "rendering completed." << std::endl;
 
 		image->blur(0.5);
 		image->draw_text("ufuk tiryaki 2009 - bogazici university", 1, 1, white, black, 8);
-		disp.display(*image);
 		image->save_bmp("output.bmp");
-		while (!disp.is_closed) disp.wait();
+		delete image;
 	}
 
 	void Scene::render()
 	{	
 		const output::Screen* scr = m_sampler->screen();
-		char timeStr [9];
-		_strtime( timeStr );
-		std::cout << "> " << timeStr << " : "<< "rendering..." << std::endl;	
+		char timeStr[9];
+		time_t now = time(NULL);
+		strftime(timeStr, sizeof(timeStr), "%H:%M:%S", localtime(&now));
+		std::cout << "> " << timeStr << " : "<< "rendering..." << std::endl;
 		CImg<unsigned char>* image = new CImg<unsigned char>(scr->width(),scr->height(),1,3,255);
-		CImgDisplay disp(*image,"pbrt - ufuk tiryaki @ bogazici university");
-		const unsigned char black[] = { 0,0,0 };
-		const unsigned char white[] = { 255,255,255 };	
-
 		for(int x=0;x<scr->width();x++)
 		{
 			for(int y=0;y<scr->height();y++)
@@ -110,53 +104,49 @@ namespace scene
 				(*image)(scr->width() - 1 - x,scr->height() - 1 - y,1) = 255*scr->buffer(x,y).g;
 				(*image)(scr->width() - 1 - x,scr->height() - 1 - y,2) = 255*scr->buffer(x,y).b;
 			}			
-			disp.display(*image);
 	    }
 
-		_strtime( timeStr );
+		now = time(NULL);
+		strftime(timeStr, sizeof(timeStr), "%H:%M:%S", localtime(&now));
 		std::cout << "> " << timeStr << " : "<< "rendering completed." << std::endl;
 
 		if(m_aa_on == true) {
-				
 			output::Screen* scr_aa = new output::Screen(scr->width(),scr->height());
 
-			_strtime( timeStr );
+			now = time(NULL);
+			strftime(timeStr, sizeof(timeStr), "%H:%M:%S", localtime(&now));
 			std::cout << "> " << timeStr << " : "<< "anti-aliasing performing...!" << std::endl;
-			
-				for(int x=0;x<scr->width();x++)
+
+			for(int x=0;x<scr->width();x++)
+			{
+				for(int y=0;y<scr->height();y++)
 				{
-						for(int y=0;y<scr->height();y++)
-						{	
-							anti_alias(scr_aa,x,y);
+					anti_alias(scr_aa,x,y);
 
-							(*image)(scr_aa->width() - 1 - x,scr_aa->height() - 1 - y,0) = 255*scr_aa->buffer(x,y).r;
-							(*image)(scr_aa->width() - 1 - x,scr_aa->height() - 1 - y,1) = 255*scr_aa->buffer(x,y).g;
-							(*image)(scr_aa->width() - 1 - x,scr_aa->height() - 1 - y,2) = 255*scr_aa->buffer(x,y).b;
-						}
-
-						if (x < (scr->width()-1)) {
-							//red line.
-							for(int j=0;j<scr->height();j++) {
-								(*image)(scr_aa->width() - 2 - x,j,0) = 255;
-								(*image)(scr_aa->width() - 2 - x,j,1) = 0;
-								(*image)(scr_aa->width() - 2 - x,j,2) = 0;
-							}
-						}
-
-						disp.display(*image);
+					(*image)(scr_aa->width() - 1 - x,scr_aa->height() - 1 - y,0) = 255*scr_aa->buffer(x,y).r;
+					(*image)(scr_aa->width() - 1 - x,scr_aa->height() - 1 - y,1) = 255*scr_aa->buffer(x,y).g;
+					(*image)(scr_aa->width() - 1 - x,scr_aa->height() - 1 - y,2) = 255*scr_aa->buffer(x,y).b;
 				}
 
-			
-			_strtime( timeStr );
-			std::cout << "> " << timeStr << " : "<< "anti-aliasing completed." << std::endl;
+				if (x < (scr->width()-1)) {
+					for(int j=0;j<scr->height();j++) {
+						(*image)(scr_aa->width() - 2 - x,j,0) = 255;
+						(*image)(scr_aa->width() - 2 - x,j,1) = 0;
+						(*image)(scr_aa->width() - 2 - x,j,2) = 0;
+					}
+				}
+			}
 
+			delete scr_aa;
+
+			now = time(NULL);
+			strftime(timeStr, sizeof(timeStr), "%H:%M:%S", localtime(&now));
+			std::cout << "> " << timeStr << " : "<< "anti-aliasing completed." << std::endl;
 		}
-			
+
 		image->blur(0.5);
-		image->draw_text("ufuk tiryaki 2009 - bogazici university",1,1,white,black,8);
-		disp.display(*image);
 		image->save_bmp("output.bmp");
-		while(!disp.is_closed) disp.wait();		
+		delete image;
 	}
 
 	bool Scene::light_intersect(const Ray& r) 
@@ -385,7 +375,7 @@ namespace scene
 			double e2 = samples[i].y();
 			double x = sqrt(e1)*cos(e2*2*PI);
 			double y = sqrt(e1)*sin(e2*2*PI);					
-			double z = sqrt(max(0.f,1.f - x*x - y*y));
+			double z = sqrt(std::max(0.0, 1.0 - x*x - y*y));
 			space::Vector3 vv = x*u + y*v + z*n;			
 			scene::Ray rr(p,vv);
 			

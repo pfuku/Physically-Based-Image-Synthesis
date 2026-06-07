@@ -37,7 +37,7 @@ namespace space
 			return *this;
 		}
 
-		Matrix operator*(Matrix& rhs)
+		Matrix operator*(const Matrix& rhs) const
 		{
 			Matrix m_;
 
@@ -51,7 +51,7 @@ namespace space
 
 
 
-		Vector3 operator*(Vector3& rhs)
+		Vector3 operator*(const Vector3& rhs) const
 		{
 			double d[4] = {0,0,0,0};
 			double v[4] = {rhs.x(),rhs.y(),rhs.z(),1.0};
@@ -63,7 +63,7 @@ namespace space
 			return Vector3(d[0],d[1],d[2]);
 		}
 
-		Point3 operator*(Point3& rhs)
+		Point3 operator*(const Point3& rhs) const
 		{
 			double d[4] = {0,0,0,0};
 			double v[4] = {rhs.x(),rhs.y(),rhs.z(),1.0};

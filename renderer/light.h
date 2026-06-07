@@ -208,7 +208,7 @@ namespace scene
 			double m_sample;
 			space::Point3 rand_point() const
 			{
-				return space::Point3(p().x() + (m_w*random()-(m_w / 2.0)),p().y(),p().z() + (m_h*random()-(m_h / 2.0)));
+				return space::Point3(p().x() + (m_w*rnd_double()-(m_w / 2.0)),p().y(),p().z() + (m_h*rnd_double()-(m_h / 2.0)));
 			}
 	};
 };

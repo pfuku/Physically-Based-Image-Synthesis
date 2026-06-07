@@ -38,12 +38,14 @@ namespace scene
 		}		
 
 		char timeStr [9];
-		_strtime( timeStr );
+		time_t now = time(NULL);
+		strftime(timeStr, sizeof(timeStr), "%H:%M:%S", localtime(&now));
 		std::cout << "> " << timeStr << " : "<< "bounding volume hierarchy is creating..." << std::endl;	
 			
 			m_tree->build(20,2,m_list);
 
-		_strtime( timeStr );
+		now = time(NULL);
+		strftime(timeStr, sizeof(timeStr), "%H:%M:%S", localtime(&now));
 		std::cout << "> " << timeStr << " : "<< "bounding volume hierarchy is created." << std::endl;
 	}
 

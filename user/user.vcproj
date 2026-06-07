@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="renderer.lib tinyxmld_stl.lib"
+			AdditionalDependencies="renderer.lib"
 				OutputFile="$(OutDir)/user.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\renderer\Debug;..\lib"
@@ -140,7 +140,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="renderer.lib tinyxml_stl.lib"
+			AdditionalDependencies="renderer.lib"
 				OutputFile="$(OutDir)/user.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\renderer\Release;..\lib"

@@ -3,3 +3,10 @@
 ################################################################################
 
 /.vs
+output.bmp
+renderapp
+build/build.log
+.DS_Store
+user/user.vcproj
+user/user.vcxproj
+user/user.vcproj
