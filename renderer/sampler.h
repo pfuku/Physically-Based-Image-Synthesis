@@ -13,17 +13,17 @@ namespace output
 	class Screen
 	{
 	public:
-		Screen(double width = 400,double height = 400): m_w(width),m_h(height)
+		Screen(int width = 400,int height = 400): m_w(width),m_h(height)
 		{
-			m_buffer = new output::TRadiance*[width];
+			m_buffer = new output::TRadiance*[m_w];
 
-			for(int i=0;i<width;i++)
-				m_buffer[i] = new output::TRadiance[height];
+			for(int i=0;i<m_w;i++)
+				m_buffer[i] = new output::TRadiance[m_h];
 
 		};
 
-		double width() const { return m_w; };		
-		double height() const { return m_h; };				
+		int width() const { return m_w; };        
+		int height() const { return m_h; };                
 
 		const output::TRadiance& buffer(int i,int j) const { return m_buffer[i][j]; };
 		void set_color(const output::TRadiance& c,int i,int j) const 
@@ -44,8 +44,8 @@ namespace output
 		}
 
 	private:
-		double m_w;
-		double m_h;
+		int m_w;
+		int m_h;
 		mutable output::TRadiance **m_buffer;
 	};
 
