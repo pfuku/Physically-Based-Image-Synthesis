@@ -21,27 +21,65 @@ A reference implementation for realistic physically-based image synthesis, writt
 - `tinyxml/` - Lightweight XML parser used to read scene configuration files.
 - `user/` - User executable entry point.
 
-## Getting Started
+## Overview
 
-### Prerequisites
-You can build the project using the provided Visual Studio solution or Makefiles. 
-- **Windows**: Open `pbrt-renderer.sln` using Visual Studio.
-- **Linux / macOS**: Build using the standard C/C++ compiler toolchain (via `make`).
+This repository is a compact, educational C/C++ reference renderer implementing physically-based image synthesis features such as scene parsing, basic material models, cameras, lights (point/area/sky), geometry loading, and a simple global illumination technique (ambient occlusion).
 
-### Running the Renderer
-To run the application, pass the path to an XML scene file as a command-line argument. For example, to render the provided example scene:
+It is intended as a learning/reference implementation rather than a production renderer.
 
-user.exe scenes/ball.xml
-Output: Upon successful execution, the resulting rendered image will be saved as output.bmp in the root directory of the executable.
+## Features
 
-Scene Configuration
-You can configure your own scenes by creating XML files in the scenes/ directory. You have granular control over materials, camera positioning, and lighting.
+- Scene description via XML files (TinyXML-based parser).
+- Triangle mesh loading and basic geometric primitives.
+- Camera models (perspective), screen/sampler, and image output to BMP.
+- Light types: point, area, and sky (ambient-like lighting).
+- Basic material support with diffuse/specular/ambient and simple reflection/refraction parameters.
+- Optional parallel rendering path (configurable via scene XML).
 
-Example Light Configurations:
+## Building
 
-<light type="point" ... /> - For hard shadows.
-<light type="area" ... /> - For soft shadows.
-<light type="sky" ... /> - For ambient occlusion.
+Supported on macOS and Linux with a standard C++ toolchain. A top-level `Makefile` is provided.
 
-License
-This project under the Creative Commons Attribution 4.0 International (CC BY 4.0) license.
+Prerequisites:
+
+- A modern C++ compiler (`clang++` or `g++`).
+- `make` build tool.
+
+To build from the repository root:
+
+```bash
+make
+```
+
+Notes and troubleshooting:
+
+- The build disables the CImg display features by default to avoid X11 dependencies on macOS. If you need display support, edit `Makefile` and remove `-Dcimg_display=0` and install X11 development headers.
+- The compiled binary is named `pbrt_renderer` by default. If a target name collides with an existing folder named `user`, the Makefile has been adjusted to avoid that conflict.
+
+## Running
+
+Run the renderer with a scene file from the repository `scenes/` folder. Example:
+
+```bash
+./pbrt_renderer scenes/ball.xml
+```
+
+The program writes the output image file (e.g., `output.bmp`) to the executable's working directory.
+
+## Project Structure
+
+- `include/` - Header files for TinyXML and project-wide interfaces.
+- `renderer/` - Renderer implementation: cameras, integrator, shapes, materials, lights, kdtree/octree, film, etc.
+- `tinyxml/` - TinyXML sources used for XML parsing.
+- `user/` - Application entry point (`main.cpp`) and any platform-specific tinyxml wrappers.
+- `scenes/` - Example scene files.
+
+## Contributing & Notes
+
+- This codebase contains a few compatibility fixes for Unix-like systems (path separators, small type fixes). If you modify or extend it, prefer small, focused changes.
+- Tests are not included; manual runs with provided scenes are the primary verification method.
+
+## License
+
+This project is distributed under the Creative Commons Attribution 4.0 International (CC BY 4.0) license.
+
